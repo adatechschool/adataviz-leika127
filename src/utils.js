@@ -90,6 +90,36 @@ export const trierParNom = (donnees, ordre = "asc") => {
   return copie;
 };
 
+export const calculerParDecennie = (donnees) => {
+  const compteur = {};
+
+  donnees.forEach((concert) => {
+    if (concert.annee === undefined || concert.annee === null) {
+      return;
+    }
+    const decennie = Math.floor(concert.annee / 10) * 10;
+    compteur[decennie] = (compteur[decennie] || 0) + 1;
+  });
+
+  return Object.keys(compteur)
+    .map((decennie) => ({ decennie: Number(decennie), total: compteur[decennie] }))
+    .sort((a, b) => a.decennie - b.decennie);
+};
+
+export const calculerTopSalles = (donnees, limite = 5) => {
+  const compteur = {};
+
+  donnees.forEach((concert) => {
+    const salle = concert.salle || "Salle inconnue";
+    compteur[salle] = (compteur[salle] || 0) + 1;
+  });
+
+  return Object.entries(compteur)
+    .map(([salle, total]) => ({ salle, total }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, limite);
+};
+
 export const formaterDateFr = (dateStr) => {
   const date = new Date(dateStr);
 

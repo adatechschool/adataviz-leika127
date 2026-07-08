@@ -1,4 +1,4 @@
-import { formaterDonnee, appliquerFiltres, trierParDate, trierParNom, formaterDateFr } from './utils.js';
+import { formaterDonnee, appliquerFiltres, trierParDate, trierParNom, calculerParDecennie, calculerTopSalles, formaterDateFr } from './utils.js';
 import './style.css';
 
 let toutesLesDonnees = [];
@@ -66,6 +66,70 @@ function afficherCartes(donnees) {
     carteAnnee.appendChild(badgeAnnee);
     carteAnnee.appendChild(sousConteneur);
     conteneurCartes.appendChild(carteAnnee);
+  });
+}
+
+function afficherStatistiques(donnees) {
+  const parDecennie = calculerParDecennie(donnees);
+  const conteneurDecennies = document.querySelector("#stats-decennies");
+  conteneurDecennies.innerHTML = "";
+  const maxDecennie = Math.max(...parDecennie.map((d) => d.total), 1);
+
+  parDecennie.forEach(({ decennie, total }) => {
+    const ligne = document.createElement("div");
+    ligne.classList.add("stat-ligne");
+
+    const label = document.createElement("span");
+    label.classList.add("stat-label");
+    label.textContent = `${decennie}s`;
+
+    const barreConteneur = document.createElement("div");
+    barreConteneur.classList.add("stat-barre-conteneur");
+
+    const barre = document.createElement("div");
+    barre.classList.add("stat-barre", "stat-barre-rose");
+    barre.style.width = `${(total / maxDecennie) * 100}%`;
+
+    const valeur = document.createElement("span");
+    valeur.classList.add("stat-valeur");
+    valeur.textContent = total;
+
+    barreConteneur.appendChild(barre);
+    ligne.appendChild(label);
+    ligne.appendChild(barreConteneur);
+    ligne.appendChild(valeur);
+    conteneurDecennies.appendChild(ligne);
+  });
+
+  const topSalles = calculerTopSalles(donnees, 5);
+  const conteneurSalles = document.querySelector("#stats-salles");
+  conteneurSalles.innerHTML = "";
+  const maxSalle = Math.max(...topSalles.map((s) => s.total), 1);
+
+  topSalles.forEach(({ salle, total }) => {
+    const ligne = document.createElement("div");
+    ligne.classList.add("stat-ligne");
+
+    const label = document.createElement("span");
+    label.classList.add("stat-label", "stat-label-salle");
+    label.textContent = salle;
+
+    const barreConteneur = document.createElement("div");
+    barreConteneur.classList.add("stat-barre-conteneur");
+
+    const barre = document.createElement("div");
+    barre.classList.add("stat-barre", "stat-barre-sarcelle");
+    barre.style.width = `${(total / maxSalle) * 100}%`;
+
+    const valeur = document.createElement("span");
+    valeur.classList.add("stat-valeur");
+    valeur.textContent = total;
+
+    barreConteneur.appendChild(barre);
+    ligne.appendChild(label);
+    ligne.appendChild(barreConteneur);
+    ligne.appendChild(valeur);
+    conteneurSalles.appendChild(ligne);
   });
 }
 
@@ -167,6 +231,7 @@ const fetchData = async () => {
     toutesLesDonnees = tousLesResultats.map(formaterDonnee);
     remplirFiltreAnnees(toutesLesDonnees);
     mettreAJourAffichage();
+    afficherStatistiques(toutesLesDonnees);
     afficherEtat("");
   } catch (error) {
     console.error("erreur de donnée", error.message);
