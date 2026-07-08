@@ -2,6 +2,7 @@ export const formaterDonnee = (item) => {
   const resultat = {};
   resultat.nom = item.artistes;
   resultat.annee = item.annee;
+  resultat.dateBrute = item["1ere_date"] || null;
   resultat.date = item["1ere_date"] ? formaterDateFr(item["1ere_date"]) : "Date inconnue";
   resultat.salle = item["1ere_salle"];
 
@@ -35,12 +36,58 @@ export const filtrerParAnnee = (donnees, annee) => {
   const resultats = [];
 
   for (const item of donnees) {
-    if (item.annee === annee) {
+    // Comparaison en chaîne : item.annee peut être un nombre (API),
+    // annee vient toujours d'un <select> donc c'est une chaîne.
+    if (String(item.annee) === String(annee)) {
       resultats.push(item);
     }
   }
 
   return resultats;
+};
+
+export const appliquerFiltres = (donnees, recherche, annee) => {
+  let resultats = donnees;
+
+  if (recherche) {
+    resultats = filtrerParNom(resultats, recherche);
+  }
+
+  if (annee) {
+    resultats = filtrerParAnnee(resultats, annee);
+  }
+
+  return resultats;
+};
+
+export const trierParDate = (donnees, ordre = "asc") => {
+  const copie = [...donnees];
+
+  copie.sort((a, b) => {
+    if (!a.dateBrute) return 1;
+    if (!b.dateBrute) return -1;
+
+    const dateA = new Date(a.dateBrute);
+    const dateB = new Date(b.dateBrute);
+
+    return ordre === "asc" ? dateA - dateB : dateB - dateA;
+  });
+
+  return copie;
+};
+
+export const trierParNom = (donnees, ordre = "asc") => {
+  const copie = [...donnees];
+
+  copie.sort((a, b) => {
+    if (!a.nom) return 1;
+    if (!b.nom) return -1;
+
+    const comparaison = a.nom.localeCompare(b.nom, "fr", { sensitivity: "base" });
+    return ordre === "asc" ? comparaison : -comparaison;
+  });
+
+  return copie;
 };
 
 export const formaterDateFr = (dateStr) => {

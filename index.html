@@ -3,18 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>adataviz</title>
   </head>
   <body>
     <div id="app">
       <h1>Trans Musicales — Rennes</h1>
+      <button id="toggle-carte">Voir la carte</button>
       <p id="total"></p>
+      <p id="etat"></p>
       <input type="text" id="recherche-nom" placeholder="Rechercher un artiste..." />
-<select id="filtre-annee">
-  <option value="">Toutes les années</option>
-</select>
-    <div id="conteneur-cartes"></div>
+      <select id="filtre-annee">
+        <option value="">Toutes les années</option>
+      </select>
+      <select id="tri-concerts">
+        <option value="date-asc">Date (plus ancien d'abord)</option>
+        <option value="date-desc">Date (plus récent d'abord)</option>
+        <option value="nom-asc">Nom (A → Z)</option>
+        <option value="nom-desc">Nom (Z → A)</option>
+      </select>
+      <div id="conteneur-cartes"></div>
+    </div>
+
+    <div id="carte_de_Rennes" hidden>
+      <div id="carte_de_Rennes_contenu">
+        <button id="fermer-carte" aria-label="Fermer la carte">&times;</button>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d241378.42646629558!2d-1.6533971235298492!3d48.054654016478096!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sfr!2sfr!4v1783495798662!5m2!1sfr!2sfr" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      </div>
     </div>
 
     <script type="module" src="/src/main.js"></script>
