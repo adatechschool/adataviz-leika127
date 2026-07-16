@@ -230,8 +230,12 @@ const fetchData = async () => {
     // Pas de "const" ici : on remplit la variable globale existante
     toutesLesDonnees = tousLesResultats.map(formaterDonnee);
     remplirFiltreAnnees(toutesLesDonnees);
-    mettreAJourAffichage();
+
+    // Ordre d'affichage au chargement initial : cartes → statistiques → compteur → état
+    const donneesTriees = trier(toutesLesDonnees, selectTri.value);
+    afficherCartes(donneesTriees);
     afficherStatistiques(toutesLesDonnees);
+    afficherCompteur(donneesTriees.length);
     afficherEtat("");
   } catch (error) {
     console.error("erreur de donnée", error.message);
